@@ -105,7 +105,7 @@ jobs:
           - [M系列芯片](${{ env.DOWNLOAD_URL }}ocs-${{ env.VERSION }}-setup-mac-arm64.dmg) | [Intel芯片](${{ env.DOWNLOAD_URL }}ocs-${{ env.VERSION }}-setup-mac-x64.dmg)
 
           ### Linux
-          - [AppImage](${{ env.DOWNLOAD_URL }}ocs-${{ env.VERSION }}-setup-linux-x86_64.AppImage)
+          - [AppImage](${{ env.DOWNLOAD_URL }}ocs-${{ env.VERSION }}-setup-linux-x86_64.AppImage) | [ARM64 AppImage](${{ env.DOWNLOAD_URL }}ocs-${{ env.VERSION }}-setup-linux-arm64.AppImage)
 
           ### 快捷访问
           - [官网](https://docs.ocsjs.com/)
@@ -126,7 +126,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/') && runner.os == 'Linux' && matrix.arch == 'x64'
         with:
           body_path: "./release.txt"
-          files: "./packages/app/dist/**.exe,./packages/app/dist/**.dmg,./packages/app/dist/**.AppImage,./packages/app/dist/**.zip,./packages/app/dist/**.deb,./packages/app/dist/**.rpm"
+          files: "./packages/app/dist/**.exe,./packages/app/dist/**.dmg,./packages/app/dist/**.AppImage,./packages/app/dist/**.zip"
 
       - name: 安装腾讯云 CLI
         if: runner.os == 'Linux' && matrix.arch == 'x64'
@@ -141,4 +141,4 @@ jobs:
         if: runner.os == 'Linux' && matrix.arch == 'x64'
         #  每个打包成非安装包的文件夹下都会有，chrome.zip，这里要删除，只上传安装包文件，里面自带编译了 chrome.zip 内置谷歌浏览器
         run: |
-          coscmd upload -r packages/app/dist/ /app/download/${{ env.VERSION }}/  --include *.zip,*.exe,*.dmg,*.AppImage,*.deb,*.rpm  --ignore  "**/*/chrome.zip"
+          coscmd upload -r packages/app/dist/ /app/download/${{ env.VERSION }}/  --include *.zip,*.exe,*.dmg,*.AppImage  --ignore  "**/*/chrome.zip"

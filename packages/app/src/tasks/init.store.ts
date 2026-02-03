@@ -2,7 +2,7 @@
 
 import { app } from 'electron';
 import { existsSync, mkdirSync } from 'fs';
-import { OriginalAppStore, store } from '../store';
+import { OriginalAppStore, store, appDataPath } from '../store';
 import { valid, coerce, clean, gt, SemVer } from 'semver';
 import defaultsDeep from 'lodash/defaultsDeep';
 import { Logger } from '../logger';
@@ -41,7 +41,7 @@ export function initStore() {
 	 * 如果浏览器缓存为空，则初始化，如果不为空那就是用户自己设置了
 	 */
 	if (!store.store.paths.userDataDirsFolder) {
-		OriginalAppStore.paths.userDataDirsFolder = path.resolve(app.getPath('userData'), './userDataDirs');
+		OriginalAppStore.paths.userDataDirsFolder = path.join(appDataPath, 'userDataDirs');
 	} else {
 		OriginalAppStore.paths.userDataDirsFolder = store.store.paths.userDataDirsFolder;
 	}

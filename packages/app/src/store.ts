@@ -1,25 +1,41 @@
 import { app, safeStorage } from 'electron';
 import path from 'path';
 import Store from 'electron-store';
+import { existsSync, mkdirSync } from 'fs';
+
+function getAppDataPath() {
+	if (process.platform === 'linux') {
+		const appImagePath = process.env.APPIMAGE;
+		if (appImagePath) {
+			const appDir = path.dirname(appImagePath);
+			const dataDir = path.join(appDir, 'ocs-data');
+			if (!existsSync(dataDir)) {
+				mkdirSync(dataDir, { recursive: true });
+			}
+			return dataDir;
+		}
+	}
+	return app.getPath('userData');
+}
+
+const appDataPath = getAppDataPath();
+
+export { appDataPath };
 
 // IO操作只能在 app.getPath('userData') 下进行，否则会有权限问题。
 
 export const OriginalAppStore = {
 	name: app.getName(),
 	version: app.getVersion(),
-	/** 路径数据 */
 	paths: {
 		'app-path': app.getAppPath(),
-		'user-data-path': app.getPath('userData'),
+		'user-data-path': appDataPath,
 		'exe-path': app.getPath('exe'),
-		'logs-path': app.getPath('logs'),
-		'config-path': path.resolve(app.getPath('userData'), './config.json'),
-		/** 浏览器用户数据文件夹 */
+		'logs-path': path.join(appDataPath, 'logs'),
+		'config-path': path.join(appDataPath, 'config.json'),
 		userDataDirsFolder: '',
-		/** 浏览器下载文件夹 */
-		downloadFolder: path.resolve(app.getPath('userData'), './downloads'),
-		/** 加载拓展路径 */
-		extensionsFolder: path.resolve(app.getPath('userData'), './downloads/extensions')
+		downloadFolder: path.join(appDataPath, 'downloads'),
+		extensionsFolder: path.join(appDataPath, 'downloads', 'extensions')
 	},
 	/** 软件设置 */
 	app: {

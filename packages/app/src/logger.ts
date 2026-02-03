@@ -1,7 +1,8 @@
 // @ts-check
 import { LoggerCore } from './logger.core';
-import { app } from 'electron';
+import { appDataPath } from './store';
+import path from 'path';
 
 export function Logger(...name: any[]) {
-	return new LoggerCore(app.getPath('logs'), true, ...name);
+	return new LoggerCore(path.join(appDataPath, 'logs'), true, ...name);
 }
